@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-using iTunesLib;
+﻿using System.IO;
 
 namespace ClassicalPlaylist
 {
@@ -20,22 +17,10 @@ namespace ClassicalPlaylist
             textWriter.WriteLine("#EXTM3U");
         }
 
-        public void WriteTrack(IITFileOrCDTrack track, string trackName)
+        public void WriteTrack(string trackName, int trackSeconds, string trackPath)
         {
-            var trackSeconds = ParseTrackTimeToSeconds(track.Time);
             textWriter.WriteLine("#EXTINF:{0},{1}", trackSeconds, trackName);
-            textWriter.WriteLine(track.Location);
-        }
-
-        private static int ParseTrackTimeToSeconds(string trackTime)
-        {
-            string[] trackTimeParts = trackTime.Split(':');
-            if (trackTimeParts.Length != 2)
-            {
-                throw new Exception(string.Format("Invalid track time: {0}", trackTime));
-            }
-
-            return Convert.ToInt32(trackTimeParts[0])*60 + Convert.ToInt32(trackTimeParts[1]);
+            textWriter.WriteLine(trackPath);
         }
     }
 }

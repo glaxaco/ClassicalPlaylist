@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassicalLibrary.cs" />
     <Compile Include="ClassicalWork.cs" />
     <Compile Include="M3uPlaylist.cs" />
     <Compile Include="Program.cs" />

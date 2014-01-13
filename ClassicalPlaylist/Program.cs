@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 using iTunesLib;
@@ -26,41 +23,13 @@ namespace ClassicalPlaylist
                 return;
             }
 
-            string playlistFullPath = args[0].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+            string playlistFullPath = Environment.ExpandEnvironmentVariables(args[0]);
             var iTunesApp = new iTunesAppClass();
             try
             {
                 IITLibraryPlaylist mainLibrary = iTunesApp.LibraryPlaylist;
-                var random = new Random();
-
-                var workGroups = from object track in mainLibrary.Tracks
-                    let filetrack = track as IITFileOrCDTrack
-                    where filetrack != null
-                          && filetrack.Genre == "Classical"
-                          && !string.IsNullOrEmpty(filetrack.Composer)
-                          && !string.IsNullOrEmpty(filetrack.Grouping)
-                          && File.Exists(filetrack.Location)
-                    group filetrack by new ClassicalWork(filetrack.Composer, filetrack.Grouping);
-
-                var shuffledWorkGroups = from item in workGroups
-                                     orderby random.Next()
-                                     select item;
-
-                using (var writer = new StreamWriter(playlistFullPath))
-                {
-                    var playlist = new M3uPlaylist(writer);
-                    playlist.WriteHeader();
-                    foreach (var workGroup in shuffledWorkGroups)
-                    {
-                        foreach (IITFileOrCDTrack track in workGroup.OrderBy(t => t.TrackNumber))
-                        {
-                            var classicalWork = workGroup.Key;
-                            string trackName = string.Format("{0} - {1}", classicalWork.WorkName,
-                                classicalWork.ComposerName);
-                            playlist.WriteTrack(track, trackName);
-                        }
-                    }
-                }
+                var classicalLibrary = new ClassicalLibrary(mainLibrary);
+                classicalLibrary.CreatePlaylist(playlistFullPath);
             }
             finally
             {
