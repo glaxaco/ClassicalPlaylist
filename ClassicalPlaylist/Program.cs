@@ -22,16 +22,12 @@ namespace iTunesUtils
             if (args.Length == 0)
             {
                 string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-                Console.WriteLine("Usage: {0} [playlist name] [playlist full path name]", programName);
+                Console.WriteLine("Usage: {0} <playlist name> [playlist full path name]", programName);
                 return;
             }
 
-            string playlistName = "Classical Shuffle";
+            string playlistName = playlistName = args[0];
             string playlistFullPath = null;
-            if (args.Length >= 1)
-            {
-                playlistName = args[0];
-            }
             if (args.Length >= 2)
             {
                 playlistFullPath = Environment.ExpandEnvironmentVariables(args[0]);
