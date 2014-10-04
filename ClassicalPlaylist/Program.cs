@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 using iTunesLib;
+using iTunesUtils.Extensions;
 
-namespace ClassicalPlaylist
+namespace iTunesUtils
 {
-    class Program
+    static class Program
     {
         /*
         ** License:
@@ -19,21 +22,60 @@ namespace ClassicalPlaylist
             if (args.Length == 0)
             {
                 string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-                Console.WriteLine("Usage: {0} <playlist full path name>", programName);
+                Console.WriteLine("Usage: {0} [playlist name] [playlist full path name]", programName);
                 return;
             }
 
-            string playlistFullPath = Environment.ExpandEnvironmentVariables(args[0]);
-            var iTunesApp = new iTunesAppClass();
-            try
+            string playlistName = "Classical Shuffle";
+            string playlistFullPath = null;
+            if (args.Length >= 1)
             {
-                IITLibraryPlaylist mainLibrary = iTunesApp.LibraryPlaylist;
-                var classicalLibrary = new ClassicalLibrary(mainLibrary);
-                classicalLibrary.CreatePlaylist(playlistFullPath);
+                playlistName = args[0];
             }
-            finally
+            if (args.Length >= 2)
             {
-                Marshal.ReleaseComObject(iTunesApp);
+                playlistFullPath = Environment.ExpandEnvironmentVariables(args[0]);
+            }
+
+            using (var iTunes = new iTunes())
+            {
+                List<IITFileOrCDTrack> tracks = 
+                    iTunes.Library.FileTracks
+                        .InGenre("Classical")
+                        .WithComposer()
+                        //.LastPlayed().Before(3.Months().Ago())  // Fun with fluent interfaces!
+                        .WithFile()
+                        .ShuffleByWork()
+                        .ToList();
+
+                IITUserPlaylist playlist = iTunes.FindPlaylistByName(playlistName);
+                if (playlist != null)
+                {
+                    playlist.Delete();
+                }
+                playlist = iTunes.CreatePlaylist(playlistName);
+                foreach (var track in tracks)
+                {
+                    playlist.AddTrack(track);
+                }
+
+                if (playlistFullPath != null)
+                {
+                    CreateM3uPlaylist(tracks, playlistFullPath, Classical.GetTrackName);
+                }
+            }
+        }
+
+        private static void CreateM3uPlaylist(IEnumerable<IITFileOrCDTrack> shuffledTracks, string playlistFullPath, Func<IITFileOrCDTrack, string> trackName)
+        {
+            using (var writer = new StreamWriter(playlistFullPath))
+            {
+                var playlist = new M3uPlaylist(writer);
+                playlist.WriteHeader();
+                foreach (var track in shuffledTracks)
+                {
+                    track.WriteTo(playlist, trackName(track));
+                }
             }
         }
 

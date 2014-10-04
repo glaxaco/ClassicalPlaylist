@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassicalPlaylist", "ClassicalPlaylist\ClassicalPlaylist.csproj", "{D1AF1D2D-ECE0-41FB-A901-4D401B68555F}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTunesUtils", "ClassicalPlaylist\iTunesUtils.csproj", "{D1AF1D2D-ECE0-41FB-A901-4D401B68555F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

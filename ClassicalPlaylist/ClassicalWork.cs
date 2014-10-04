@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ClassicalPlaylist
+namespace iTunesUtils
 {
     public class ClassicalWork
     {
-        public string ComposerName { get; private set; }
-        public string WorkName { get; private set; }
+        public string Composer { get; private set; }
+        public string Album { get; private set; }
+        public string Name { get; private set; }
 
-        public ClassicalWork(string composerName, string workName)
+        public ClassicalWork(string composerName, string albumName, string workName)
         {
             if (composerName == null) throw new ArgumentNullException("composerName");
             if (workName == null) throw new ArgumentNullException("workName");
 
-            ComposerName = composerName;
-            WorkName = workName;
+            Composer = composerName;
+            Album = albumName;
+            Name = workName;
         }
 
         public override string ToString()
         {
-            return string.Format("{0} by {1}", WorkName, ComposerName);
+            return string.Format("{0} by {1}", Name, Composer);
         }
 
         public override bool Equals(object obj)
@@ -29,12 +28,15 @@ namespace ClassicalPlaylist
             var other = obj as ClassicalWork;
             if (other == null) return false;
 
-            return other.ComposerName == ComposerName && other.WorkName == WorkName;
+            return 
+                other.Composer == Composer && 
+                other.Album == Album && 
+                other.Name == Name;
         }
 
         public override int GetHashCode()
         {
-            return ComposerName.GetHashCode() ^ WorkName.GetHashCode();
+            return Composer.GetHashCode() ^ Album.GetHashCode() ^ Name.GetHashCode();
         }
     }
 }
