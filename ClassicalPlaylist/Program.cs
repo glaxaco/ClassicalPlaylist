@@ -26,7 +26,7 @@ namespace iTunesUtils
                 return;
             }
 
-            string playlistName = playlistName = args[0];
+            string playlistName = args[0];
             string playlistFullPath = null;
             if (args.Length >= 2)
             {

@@ -15,7 +15,7 @@ namespace iTunesUtils.Extensions
 
             foreach (var workGroup in shuffledWorkGroups)
             {
-                var classicalWork = workGroup.Key;
+                // Work name is workGroup.Key;
                 var tracks = workGroup.OrderBy(t => t.TrackNumber).ToList();
                 //var trackNames = tracks.Select(t => t.Name).ToList(); // sometimes useful for debugging
                 foreach (IITFileOrCDTrack track in tracks)
